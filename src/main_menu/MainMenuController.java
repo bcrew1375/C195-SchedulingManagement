@@ -42,6 +42,8 @@ public class MainMenuController {
 
     Stage addCustomerStage;
     Stage updateCustomerStage;
+    Stage addAppointmentStage;
+    Stage updateAppointmentStage;
 
     Utility utility;
 
@@ -106,31 +108,61 @@ public class MainMenuController {
 
     @FXML
     void appointmentAddButton() {
+        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
+        if (database.getSelectedCustomer() != null) {
+            addAppointmentStage = utility.LoadFXML("/fxml/AddAppointment.fxml");
+
+            addAppointmentStage.initModality(Modality.WINDOW_MODAL);
+            addAppointmentStage.showAndWait();
+
+//            refreshCustomerList();
+            refreshAppointmentList();
+        }
     }
 
     @FXML
     void appointmentUpdateButton() {
+        database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
+        if (database.getSelectedAppointment() != null) {
+            updateAppointmentStage = utility.LoadFXML("/fxml/UpdateAppointment.fxml");
+
+            updateAppointmentStage.initModality(Modality.WINDOW_MODAL);
+            updateAppointmentStage.showAndWait();
+
+//            refreshCustomerList();
+            refreshAppointmentList();
+        }
     }
 
     @FXML
     void appointmentDeleteButton() {
+        database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
+        if (database.getSelectedAppointment() != null) {
+            database.deleteAppointmentRecord((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
+
+//            refreshCustomerList();
+            refreshAppointmentList();
+        }
     }
 
     @FXML
-    void updateAppointmentList() {
-        Customer selectedCustomer;
-        ObservableList customerAppointments;
+    void refreshAppointmentList() {
 
-        selectedCustomer = (Customer) customerTableView.getSelectionModel().getSelectedItem();
+        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
-        appointmentTableView.setItems(selectedCustomer.getAppointmentList());
+        if (database.getSelectedCustomer() != null) {
+            appointmentTableView.setItems(database.getSelectedCustomer().getAppointmentList());
+        }
+        else {
+            appointmentTableView.setItems(null);
+        }
     }
 
+    @FXML
     void refreshCustomerList() {
-        database.constructDatabaseRecords();
         customerList = database.getCombinedCustomerList();
         customerTableView.setItems(customerList);
     }

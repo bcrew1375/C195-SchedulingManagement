@@ -33,7 +33,7 @@
                                  <Font name="System Bold" size="20.0" />
                               </font>
                            </Label>
-                           <TableView fx:id="customerTableView" onKeyPressed="#updateAppointmentList" onMouseClicked="#updateAppointmentList" prefHeight="160.0">
+                           <TableView fx:id="customerTableView" onKeyPressed="#refreshAppointmentList" onKeyReleased="#refreshAppointmentList" onKeyTyped="#refreshAppointmentList" onMouseClicked="#refreshAppointmentList" prefHeight="160.0">
                              <columns>
                                <TableColumn fx:id="customerNameColumn" prefWidth="292.0" text="Customer Name" />
                                  <TableColumn fx:id="customerAddressColumn" prefWidth="293.0" text="Address" />
@@ -54,9 +54,9 @@
                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                               <children>
-                                 <Button id="MAIN_MENU_PARTS_ADD_BUTTON" mnemonicParsing="false" onAction="#customersAddButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PARTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#customersUpdateButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PARTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#customersDeleteButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PARTS_ADD_BUTTON" mnemonicParsing="false" onAction="#customersAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PARTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#customersUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PARTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#customersDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                               </children>
                            </GridPane>
                         </children>
@@ -73,13 +73,9 @@
                            </Label>
                            <TableView id="MAIN_MENU_PRODUCTS_TABLE" fx:id="appointmentTableView" prefHeight="160.0">
                               <columns>
-                                 <TableColumn id="MAIN_MENU_PRODUCTS_TABLE_COLUMN_PARTID" fx:id="appointmentTitleColumn" editable="false" prefWidth="125.0" text="Title" />
-                                 <TableColumn id="MAIN_MENU_PRODUCTS_TABLE_COLUMN_PARTNAME" fx:id="appointmentDescriptionColumn" editable="false" prefWidth="125.0" text="Description" />
-                                 <TableColumn id="MAIN_MENU_PRODUCTS_TABLE_COLUMN_STOCK" fx:id="appointmentLocationColumn" editable="false" prefWidth="125.0" text="Location" />
-                                 <TableColumn id="MAIN_MENU_PRODUCTS_TABLE_COLUMN_PRICE" fx:id="appointmentContactColumn" editable="false" prefWidth="125.0" text="Contact" />
-                                 <TableColumn fx:id="appointmentTypeColumn" prefWidth="125.0" text="Type" />
-                                 <TableColumn fx:id="appointmentStartColumn" prefWidth="125.0" text="Start" />
-                                 <TableColumn fx:id="appointmentEndColumn" prefWidth="125.0" text="End" />
+                                 <TableColumn fx:id="appointmentTypeColumn" prefWidth="292.0" text="Type" />
+                                 <TableColumn fx:id="appointmentStartColumn" prefWidth="293.0" text="Start" />
+                                 <TableColumn fx:id="appointmentEndColumn" prefWidth="292.0" text="End" />
                               </columns>
                            </TableView>
                            <GridPane>
@@ -93,9 +89,9 @@
                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                               <children>
-                                 <Button id="MAIN_MENU_PRODUCTS_ADD_BUTTON" mnemonicParsing="false" onAction="#appointmentAddButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PRODUCTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#appointmentUpdateButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PRODUCTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#appointmentDeleteButton" prefHeight="25.0" prefWidth="70.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PRODUCTS_ADD_BUTTON" mnemonicParsing="false" onAction="#appointmentAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PRODUCTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#appointmentUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                                 <Button id="MAIN_MENU_PRODUCTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#appointmentDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                               </children>
                            </GridPane>
                         </children>

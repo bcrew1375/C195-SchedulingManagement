@@ -48,7 +48,7 @@
                               </font>
                            </Label>
                            <TextField fx:id="passwordTextbox" promptText="password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                           <Button mnemonicParsing="false" onAction="#loginButtonClicked" prefHeight="25.0" prefWidth="75.0" text="Login" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                           <Button mnemonicParsing="false" onAction="#loginButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Login" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         </children>
                      </GridPane>
                   </children>

@@ -4,6 +4,8 @@ import database.Database;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import java.sql.Timestamp;
+
 public class UpdateCustomerController {
     Database database;
 

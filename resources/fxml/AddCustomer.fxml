@@ -61,9 +61,9 @@
                      </GridPane>
                      <HBox>
                         <children>
-                           <Button mnemonicParsing="false" onAction="#CancelButton" prefHeight="25.0" prefWidth="70.0" text="Cancel" />
+                           <Button mnemonicParsing="false" onAction="#CancelButton" prefHeight="25.0" prefWidth="100.0" text="Cancel" />
                            <Pane prefWidth="75.0" />
-                           <Button mnemonicParsing="false" onAction="#AddButton" prefHeight="25.0" prefWidth="70.0" text="Add" />
+                           <Button mnemonicParsing="false" onAction="#AddButton" prefHeight="25.0" prefWidth="100.0" text="Add" />
                         </children>
                      </HBox>
                   </children>

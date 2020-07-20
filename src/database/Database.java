@@ -25,6 +25,9 @@ public class Database {
     private Utility utility = new Utility();
 
     private Customer selectedCustomer;
+    private AppointmentRecord selectedAppointment;
+
+    private int currentUserId;
 
     private Database() {
 
@@ -53,15 +56,17 @@ public class Database {
         String dbUserName, dbPassword;
 
         try {
-            results = sqlStatement.executeQuery("SELECT userName, password FROM user");
+            results = sqlStatement.executeQuery("SELECT userId, userName, password FROM user");
 
             while (results.next()) {
                 dbUserName = results.getString("userName");
                 dbPassword = results.getString("password");
 
                 // If the entered userName and password matches an entry in the database, return success code.
-                if (userName.matches(dbUserName) && password.matches(dbPassword))
+                if (userName.matches(dbUserName) && password.matches(dbPassword)) {
+                    currentUserId = results.getInt("userId");
                     return 2;
+                }
             }
         }
         catch (Exception e) {
@@ -117,6 +122,165 @@ public class Database {
         }
     }
 
+    public void addCustomerRecord(String customerName, String address, String phoneNumber) {
+        PreparedStatement statement;
+        int addressId;
+
+        try {
+            statement = databaseConnection.prepareStatement("INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            statement.setString(1, address);
+            statement.setString(2,"");
+            statement.setInt(3,1);
+            statement.setString(4,"");
+            statement.setString(5, phoneNumber);
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.systemDefault())));
+            statement.setString(7, "");
+            statement.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.systemDefault())));
+            statement.setString(9, "");
+
+            statement.executeUpdate();
+
+            results = sqlStatement.executeQuery("SELECT addressId FROM address WHERE address = '" + address + "'");
+            results.next();
+            addressId = Integer.parseInt(results.getString("addressId"));
+
+            statement = databaseConnection.prepareStatement("INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+            statement.setString(1, customerName);
+            statement.setInt(2, addressId);
+            statement.setInt(3, 1);
+            statement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(5, "");
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(7, "");
+
+            statement.executeUpdate();
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error adding customer to database");
+        }
+    }
+
+    public void deleteCustomerRecord(Customer customer) {
+        try {
+            sqlStatement.executeUpdate("DELETE FROM customer WHERE customerId = " + customer.getCustomerId());
+            sqlStatement.executeUpdate("DELETE FROM address WHERE addressId = " + customer.getAddressId());
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error deleting customer from database.");
+        }
+    }
+
+    public void updateCustomerRecord(Customer customer) {
+        PreparedStatement statement;
+
+        try {
+            statement = databaseConnection.prepareStatement("UPDATE address SET address = ?, address2 = ?, cityId = ?, postalCode = ?" +
+                    ", phone = ?, createDate = ?, createdBy = ?, lastUpdate = ?, lastUpdateBy = ? WHERE addressId = ?");
+
+            statement.setString(1, customer.getAddress());
+            statement.setString(2, "");
+            statement.setInt(3, 1);
+            statement.setString(4, "");
+            statement.setString(5, customer.getPhoneNumber());
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(7, "");
+            statement.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(9, "");
+            statement.setInt(10, customer.getAddressId());
+
+            statement.executeUpdate();
+
+            statement = databaseConnection.prepareStatement("UPDATE customer SET customerName = ?, addressId = ?, active = ?, createDate = ?, createdBy = ?" +
+                    ", lastUpdate = ?, lastUpdateBy = ? WHERE customerId = ?");
+
+            statement.setString(1, customer.getCustomerName());
+            statement.setInt(2, customer.getAddressId());
+            statement.setInt(3, 1);
+            statement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(5, "");
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(7, "");
+            statement.setInt(8, customer.getCustomerId());
+
+            statement.executeUpdate();
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error updating customer in database.");
+        }
+    }
+
+    public void addAppointmentRecord(int customerId, int userId, String type, Timestamp start, Timestamp end) {
+        PreparedStatement statement;
+
+        try {
+            statement = databaseConnection.prepareStatement("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, " +
+                    "createdBy, lastUpdate, lastUpdateBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            statement.setInt(1, customerId);
+            statement.setInt(2, userId);
+            statement.setString(3, "");
+            statement.setString(4, "");
+            statement.setString(5, "");
+            statement.setString(6, "");
+            statement.setString(7, type);
+            statement.setString(8, "");
+            statement.setTimestamp(9, start);
+            statement.setTimestamp(10, end);
+            statement.setTimestamp(11, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(12, "");
+            statement.setTimestamp(13, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(14, "");
+
+            statement.executeUpdate();
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error adding appointment to database.");
+        }
+    }
+
+    public void deleteAppointmentRecord(AppointmentRecord appointment) {
+        try {
+            sqlStatement.executeUpdate("DELETE FROM appointment WHERE appointmentId = " + appointment.getAppointmentId());
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error deleting appointment from database.");
+        }
+    }
+
+    public void updateAppointmentRecord(AppointmentRecord appointment) {
+        PreparedStatement statement;
+
+        try {
+            statement = databaseConnection.prepareStatement("UPDATE appointment SET type = ?, start = ?, end = ? WHERE appointmentId = ?");
+
+            statement.setString(1, appointment.getType());
+            statement.setTimestamp(2, appointment.getStart());
+            statement.setTimestamp(3, appointment.getEnd());
+            statement.setInt(4, appointment.getAppointmentId());
+
+            statement.executeUpdate();
+
+            constructDatabaseRecords();
+        }
+        catch (Exception e) {
+            utility.displayError("Error updating appointment in database.");
+        }
+    }
+
     public ObservableList<AddressRecord> getAddressRecords() {
         return addressRecords;
     }
@@ -141,69 +305,15 @@ public class Database {
         return this.selectedCustomer;
     }
 
-    public void addCustomerRecord(String customerName, String address, String phoneNumber) {
-        String statement;
-        int addressId;
+    public AppointmentRecord getSelectedAppointment() { return selectedAppointment; }
 
-        try {
-            statement = ("INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)" +
-                    " VALUES ('" + address + "', '', 1, '', '" + phoneNumber + "', '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) +
-                    "', '', '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) + "', '')");
+    public void setSelectedAppointment(AppointmentRecord selectedAppointment) { this.selectedAppointment = selectedAppointment; }
 
-            sqlStatement.executeUpdate(statement);
-
-            results = sqlStatement.executeQuery("SELECT addressId FROM address WHERE address = '" + address + "'");
-            results.next();
-            addressId = Integer.parseInt(results.getString("addressId"));
-
-            statement = ("INSERT INTO customer (customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy)" +
-                    "VALUES ('" + customerName + "', " + addressId + ", 1, '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) +
-                    "', '', '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) + "', '')");
-
-            sqlStatement.executeUpdate(statement);
-        }
-        catch (Exception e) {
-            utility.displayError("Error adding customer to database");
-        }
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 
-    public void deleteCustomerRecord(Customer customer) {
-        String statement;
-        int addressId;
-
-        try {
-            sqlStatement.executeUpdate("DELETE FROM customer WHERE customerId = " + customer.getCustomerId());
-            sqlStatement.executeUpdate("DELETE FROM address WHERE addressId = " + customer.getAddressId());
-        }
-        catch (Exception e) {
-            utility.displayError("Error deleting customer from database.");
-        }
-    }
-
-    public void updateCustomerRecord(Customer customer) {
-        String statement;
-        int addressId;
-
-        try {
-            statement = ("UPDATE address SET address = '" + customer.getAddress() + "', address2 = '', cityId = 1, postalCode = '', phone = '" +
-                    customer.getPhoneNumber() + "', createDate = '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) +
-                    "', createdBy = '', lastUpdate = '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) + "', lastUpdateBy = ''" +
-                    "WHERE addressId = " + customer.getAddressId());
-
-            sqlStatement.executeUpdate(statement);
-
-            results = sqlStatement.executeQuery("SELECT addressId FROM address WHERE address = '" + customer.getAddress() + "'");
-            results.next();
-            addressId = Integer.parseInt(results.getString("addressId"));
-
-            statement = ("UPDATE customer SET customerName = '" + customer.getCustomerName() + "', addressId = " + addressId + ", active = 1" +
-                    ", createDate = '" + Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) + "', createdBy = '', lastUpdate = '" +
-                    Timestamp.valueOf(LocalDateTime.now(ZoneOffset.UTC)) + "', lastUpdateBy = '' WHERE customerId = " + customer.getCustomerId());
-
-            sqlStatement.executeUpdate(statement);
-        }
-        catch (Exception e) {
-            utility.displayError("Error updating customer from database.");
-        }
+    public void setCurrentUserId(int currentUserId) {
+        this.currentUserId = currentUserId;
     }
 }
