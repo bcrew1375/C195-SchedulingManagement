@@ -1,6 +1,7 @@
 package main_menu;
 
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -69,6 +70,8 @@ public class MainMenuController {
         appointmentEndColumn.setCellValueFactory(new PropertyValueFactory<>("end"));
 
         customerTableView.setItems(customerList);
+
+        customerNameColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
 
     @FXML
@@ -116,7 +119,7 @@ public class MainMenuController {
             addAppointmentStage.initModality(Modality.WINDOW_MODAL);
             addAppointmentStage.showAndWait();
 
-//            refreshCustomerList();
+            refreshCustomerList();
             refreshAppointmentList();
         }
     }
@@ -131,7 +134,7 @@ public class MainMenuController {
             updateAppointmentStage.initModality(Modality.WINDOW_MODAL);
             updateAppointmentStage.showAndWait();
 
-//            refreshCustomerList();
+            refreshCustomerList();
             refreshAppointmentList();
         }
     }
@@ -143,15 +146,15 @@ public class MainMenuController {
         if (database.getSelectedAppointment() != null) {
             database.deleteAppointmentRecord((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
-//            refreshCustomerList();
+            refreshCustomerList();
             refreshAppointmentList();
         }
     }
 
     @FXML
     void refreshAppointmentList() {
-
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
+
 
         if (database.getSelectedCustomer() != null) {
             appointmentTableView.setItems(database.getSelectedCustomer().getAppointmentList());
@@ -163,7 +166,7 @@ public class MainMenuController {
 
     @FXML
     void refreshCustomerList() {
-        customerList = database.getCombinedCustomerList();
+        customerList = new SortedList<>(database.getCombinedCustomerList());
         customerTableView.setItems(customerList);
     }
 }
