@@ -31,6 +31,11 @@ public class Database {
 
     private Database() {
 
+        addressRecords = FXCollections.observableArrayList();
+        appointmentRecords = FXCollections.observableArrayList();
+        customerRecords = FXCollections.observableArrayList();
+        combinedCustomerRecords = FXCollections.observableArrayList();
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
@@ -78,10 +83,6 @@ public class Database {
 
     // Create local objects for database records.
     public void constructDatabaseRecords() {
-        addressRecords = FXCollections.observableArrayList();
-        appointmentRecords = FXCollections.observableArrayList();
-        customerRecords = FXCollections.observableArrayList();
-        combinedCustomerRecords = FXCollections.observableArrayList();
 
         addressRecords.removeAll();
         appointmentRecords.removeAll();
@@ -106,11 +107,9 @@ public class Database {
             results = sqlStatement.executeQuery("SELECT * FROM appointment");
 
             while (results.next()) {
-                appointmentRecords.add(new AppointmentRecord(Integer.parseInt(results.getString("appointmentId")),
-                        Integer.parseInt(results.getString("customerId")), Integer.parseInt(results.getString("userId")),
-                        results.getString("type"), results.getString("url"),
-                        LocalDateTime.parse(results.getString("start"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.of("GMT+0")),
-                        LocalDateTime.parse(results.getString("end"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.of("GMT+0"))));
+                appointmentRecords.add(new AppointmentRecord(results.getInt("appointmentId"), results.getInt("customerId"),
+                        results.getInt("userId"), results.getString("type"), results.getString("url"),
+                        results.getTimestamp("start"), results.getTimestamp("end")));
             }
 
             for (int i = 0; i < customerRecords.size(); i++) {
@@ -125,6 +124,10 @@ public class Database {
     public void addCustomerRecord(String customerName, String address, String phoneNumber) {
         PreparedStatement statement;
         int addressId;
+        int customerId;
+
+        AddressRecord addedAddressRecord;
+        CustomerRecord addedCustomerRecord;
 
         try {
             statement = databaseConnection.prepareStatement("INSERT INTO address (address, address2, cityId, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy)" +
@@ -135,9 +138,9 @@ public class Database {
             statement.setInt(3,1);
             statement.setString(4,"");
             statement.setString(5, phoneNumber);
-            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.systemDefault())));
+            statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(7, "");
-            statement.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now(ZoneOffset.systemDefault())));
+            statement.setTimestamp(8, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(9, "");
 
             statement.executeUpdate();
@@ -159,7 +162,19 @@ public class Database {
 
             statement.executeUpdate();
 
-            constructDatabaseRecords();
+            results = sqlStatement.executeQuery("SELECT customerId FROM customer WHERE customerName = '" + customerName + "'");
+            results.next();
+            customerId = Integer.parseInt(results.getString("customerId"));
+
+            // Update local record lists.
+            addedAddressRecord = new AddressRecord(addressId, address, phoneNumber);
+            addedCustomerRecord = new CustomerRecord(customerId, customerName, addressId);
+
+            addressRecords.add(addedAddressRecord);
+            customerRecords.add(addedCustomerRecord);
+            combinedCustomerRecords.add(new Customer(addedCustomerRecord));
+
+            //constructDatabaseRecords();
         }
         catch (Exception e) {
             utility.displayError("Error adding customer to database");
@@ -168,10 +183,28 @@ public class Database {
 
     public void deleteCustomerRecord(Customer customer) {
         try {
+            sqlStatement.executeUpdate("DELETE FROM appointment WHERE customerId = " + customer.getCustomerId());
             sqlStatement.executeUpdate("DELETE FROM customer WHERE customerId = " + customer.getCustomerId());
             sqlStatement.executeUpdate("DELETE FROM address WHERE addressId = " + customer.getAddressId());
 
-            constructDatabaseRecords();
+            // Remove relevant local records from lists.
+            for (int i = 0; i < addressRecords.size(); i++) {
+                if (addressRecords.get(i).getAddressId() == customer.getAddressId())
+                    addressRecords.remove(i);
+            }
+
+            for (int i = 0; i < customerRecords.size(); i++) {
+                if (customerRecords.get(i).getCustomerId() == customer.getCustomerId())
+                    customerRecords.remove(i);
+            }
+
+            for (int i = 0; i < appointmentRecords.size(); i++) {
+                if (appointmentRecords.get(i).getCustomerId() == customer.getCustomerId())
+                    appointmentRecords.remove(i);
+            }
+
+            combinedCustomerRecords.remove(customer);
+            //constructDatabaseRecords();
         }
         catch (Exception e) {
             utility.displayError("Error deleting customer from database.");
@@ -212,7 +245,20 @@ public class Database {
 
             statement.executeUpdate();
 
-            constructDatabaseRecords();
+            // Update relevant local record lists.
+            for (int i = 0; i < addressRecords.size(); i++) {
+                if (addressRecords.get(i).getAddressId() == customer.getAddressId()) {
+                    addressRecords.get(i).setAddress(customer.getAddress());
+                    addressRecords.get(i).setPhone(customer.getPhoneNumber());
+                }
+            }
+
+            for (int i = 0; i < customerRecords.size(); i++) {
+                if (customerRecords.get(i).getCustomerId() == customer.getCustomerId())
+                    customerRecords.get(i).setCustomerName(customer.getCustomerName());
+            }
+
+            combinedCustomerRecords.set(combinedCustomerRecords.indexOf(selectedCustomer), customer);
         }
         catch (Exception e) {
             utility.displayError("Error updating customer in database.");
@@ -222,9 +268,11 @@ public class Database {
     public void addAppointmentRecord(int customerId, int userId, String type, Timestamp start, Timestamp end) {
         PreparedStatement statement;
 
+        int appointmentId;
+
         try {
             statement = databaseConnection.prepareStatement("INSERT INTO appointment (customerId, userId, title, description, location, contact, type, url, start, end, createDate, " +
-                    "createdBy, lastUpdate, lastUpdateBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "createdBy, lastUpdate, lastUpdateBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             statement.setInt(1, customerId);
             statement.setInt(2, userId);
@@ -234,16 +282,20 @@ public class Database {
             statement.setString(6, "");
             statement.setString(7, type);
             statement.setString(8, "");
-            statement.setTimestamp(9, start);
-            statement.setTimestamp(10, end);
+            statement.setTimestamp(9, Timestamp.valueOf(start.toLocalDateTime()));
+            statement.setTimestamp(10, Timestamp.valueOf(end.toLocalDateTime()));
             statement.setTimestamp(11, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(12, "");
             statement.setTimestamp(13, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(14, "");
 
             statement.executeUpdate();
+            results = statement.getGeneratedKeys();
+            results.next();
+            appointmentId = results.getInt(1);
 
-            constructDatabaseRecords();
+            combinedCustomerRecords.get(combinedCustomerRecords.indexOf(selectedCustomer)).getAppointmentList().add(new AppointmentRecord(
+                    appointmentId, customerId, userId, type, "", start, end));
         }
         catch (Exception e) {
             utility.displayError("Error adding appointment to database.");
@@ -254,7 +306,7 @@ public class Database {
         try {
             sqlStatement.executeUpdate("DELETE FROM appointment WHERE appointmentId = " + appointment.getAppointmentId());
 
-            constructDatabaseRecords();
+            selectedCustomer.getAppointmentList().remove(appointment);
         }
         catch (Exception e) {
             utility.displayError("Error deleting appointment from database.");
@@ -264,17 +316,23 @@ public class Database {
     public void updateAppointmentRecord(AppointmentRecord appointment) {
         PreparedStatement statement;
 
+        int customerIndex;
+        int appointmentIndex;
+
         try {
             statement = databaseConnection.prepareStatement("UPDATE appointment SET type = ?, start = ?, end = ? WHERE appointmentId = ?");
 
             statement.setString(1, appointment.getType());
-            statement.setTimestamp(2, appointment.getStart());
-            statement.setTimestamp(3, appointment.getEnd());
+            statement.setTimestamp(2, Timestamp.valueOf(appointment.getStart().toLocalDateTime()));
+            statement.setTimestamp(3, Timestamp.valueOf(appointment.getEnd().toLocalDateTime()));
             statement.setInt(4, appointment.getAppointmentId());
 
             statement.executeUpdate();
 
-            constructDatabaseRecords();
+            customerIndex = combinedCustomerRecords.indexOf(selectedCustomer);
+            appointmentIndex = combinedCustomerRecords.get(customerIndex).getAppointmentList().indexOf(appointment);
+
+            combinedCustomerRecords.get(customerIndex).getAppointmentList().set(appointmentIndex, appointment);
         }
         catch (Exception e) {
             utility.displayError("Error updating appointment in database.");

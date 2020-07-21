@@ -21,13 +21,10 @@ public class Customer {
 
     Database database;
 
-    public Customer(CustomerRecord customerRecord/*int customerId, String customerName, int addressId, String address, String phoneNumber, int appointmentId, String type,
-                    String url, LocalDateTime start, LocalDateTime end*/) {
+    public Customer(CustomerRecord customerRecord) {
         this.customerId = customerRecord.getCustomerId();
         this.customerName = customerRecord.getCustomerName();
         this.addressId = customerRecord.getAddressId();
-        //this.address = customerRecord.;
-        //this.phoneNumber = phoneNumber;
 
         database = Database.getInstance();
 

@@ -6,6 +6,7 @@ import javafx.scene.control.TextField;
 import database.Database;
 
 import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 public class AddAppointmentController {
     @FXML

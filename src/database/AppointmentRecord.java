@@ -2,10 +2,7 @@ package database;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 public class AppointmentRecord {
@@ -17,14 +14,14 @@ public class AppointmentRecord {
     private Timestamp start;
     private Timestamp end;
 
-    public AppointmentRecord(int appointmentId, int customerId, int userId, String type, String url, ZonedDateTime start, ZonedDateTime end) {
+    public AppointmentRecord(int appointmentId, int customerId, int userId, String type, String url, Timestamp start, Timestamp end) {
         this.appointmentId = appointmentId;
         this.customerId = customerId;
         this.userId = userId;
         this.type = type;
         this.url = url;
-        this.start = Timestamp.valueOf(start.withZoneSameInstant(ZoneOffset.systemDefault()).toLocalDateTime());
-        this.end = Timestamp.valueOf(end.withZoneSameInstant(ZoneOffset.systemDefault()).toLocalDateTime());
+        this.start = start;
+        this.end = end;
     }
 
     public int getAppointmentId() {

@@ -81,6 +81,8 @@ public class MainMenuController {
         addCustomerStage.initModality(Modality.WINDOW_MODAL);
         addCustomerStage.showAndWait();
 
+        //customerTableView.getItems().add(database.getSelectedCustomer());
+
         refreshCustomerList();
     }
 
@@ -126,6 +128,7 @@ public class MainMenuController {
 
     @FXML
     void appointmentUpdateButton() {
+        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
         database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedAppointment() != null) {
@@ -141,6 +144,7 @@ public class MainMenuController {
 
     @FXML
     void appointmentDeleteButton() {
+        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
         database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedAppointment() != null) {
@@ -155,7 +159,6 @@ public class MainMenuController {
     void refreshAppointmentList() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
-
         if (database.getSelectedCustomer() != null) {
             appointmentTableView.setItems(database.getSelectedCustomer().getAppointmentList());
         }
@@ -166,7 +169,7 @@ public class MainMenuController {
 
     @FXML
     void refreshCustomerList() {
-        customerList = new SortedList<>(database.getCombinedCustomerList());
+        customerList = database.getCombinedCustomerList();
         customerTableView.setItems(customerList);
     }
 }

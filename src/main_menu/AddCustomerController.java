@@ -1,5 +1,8 @@
 package main_menu;
 
+import database.Customer;
+import database.CustomerRecord;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -23,6 +26,13 @@ public class AddCustomerController {
     @FXML
     void AddButton() {
         database.addCustomerRecord(customerNameTextField.getText(), addressTextField.getText(), phoneNumberTextField.getText());
+
+        for (int i = 0; i < database.getCustomerRecords().size(); i++) {
+            if (database.getCustomerRecords().get(i).getCustomerName().equals(customerNameTextField.getText())) {
+                database.setSelectedCustomer(new Customer(database.getCustomerRecords().get(i)));
+            }
+        }
+
         customerNameTextField.getScene().getWindow().hide();
     }
 
