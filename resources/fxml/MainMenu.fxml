@@ -26,6 +26,11 @@
                            <Font size="24.0" />
                         </font>
                      </Label>
+                     <Label text="Business hours: 8:00 A.M. to 5:00 P.M. EST">
+                        <font>
+                           <Font size="18.0" />
+                        </font>
+                     </Label>
                      <VBox spacing="10.0" style="-fx-border-color: black;">
                         <children>
                            <Label id="MAIN_MENU_PARTS_LABEL" text="Customers">

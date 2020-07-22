@@ -66,10 +66,12 @@ public class MainMenuController {
         customerPhoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
         appointmentTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        appointmentStartColumn.setCellValueFactory(new PropertyValueFactory<>("start"));
-        appointmentEndColumn.setCellValueFactory(new PropertyValueFactory<>("end"));
+        appointmentStartColumn.setCellValueFactory(new PropertyValueFactory<>("displayStartTime"));
+        appointmentEndColumn.setCellValueFactory(new PropertyValueFactory<>("displayEndTime"));
 
         customerTableView.setItems(customerList);
+        customerTableView.getSelectionModel().select(0);
+        refreshAppointmentList();
 
         customerNameColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
