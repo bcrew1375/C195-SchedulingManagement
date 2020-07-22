@@ -3,6 +3,8 @@ package database;
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
@@ -178,6 +180,23 @@ public class Database {
         }
         catch (Exception e) {
             utility.displayError("Error adding customer to database");
+        }
+    }
+
+    public void checkUpcomingAppointments() {
+        Timestamp appointmentTime;
+
+        for (int i = 0; i < combinedCustomerRecords.size(); i++) {
+            for (int j = 0; j < combinedCustomerRecords.get(i).getAppointmentList().size(); j++) {
+                appointmentTime = combinedCustomerRecords.get(i).getAppointmentList().get(j).getStart();
+
+                if (Duration.between(LocalDateTime.now(), appointmentTime.toLocalDateTime()).toMinutes() <= 15
+                        && combinedCustomerRecords.get(i).getAppointmentList().get(j).getUserId() == currentUserId) {
+
+                    utility.displayMessage("Appointment Alert", "You have an appointment with " + combinedCustomerRecords.get(i).getCustomerName() +
+                            " within 15 minutes at: " + appointmentTime.toString());
+                }
+            }
         }
     }
 

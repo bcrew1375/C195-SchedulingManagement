@@ -81,8 +81,6 @@ public class MainMenuController {
         addCustomerStage.initModality(Modality.WINDOW_MODAL);
         addCustomerStage.showAndWait();
 
-        //customerTableView.getItems().add(database.getSelectedCustomer());
-
         refreshCustomerList();
     }
 
@@ -108,6 +106,7 @@ public class MainMenuController {
             database.deleteCustomerRecord((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
             refreshCustomerList();
+            refreshAppointmentList();
         }
     }
 

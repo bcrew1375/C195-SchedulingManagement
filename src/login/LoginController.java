@@ -73,6 +73,7 @@ public class LoginController {
                 mainMenuStage = utility.LoadFXML("/fxml/MainMenu.fxml");
                 loginTextbox.getScene().getWindow().hide();
                 mainMenuStage.show();
+                database.checkUpcomingAppointments();
                 break;
             }
 
