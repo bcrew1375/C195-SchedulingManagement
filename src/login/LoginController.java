@@ -3,6 +3,7 @@ package login;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javafx.fxml.FXML;
@@ -90,7 +91,8 @@ public class LoginController {
         currentTimestamp = new Timestamp(System.currentTimeMillis());
 
         try {
-            logString = "User " + loginTextbox.getText() + " logged in at " + currentTimestamp + "\r\n";
+            logString = "User " + loginTextbox.getText() + " logged in at " +
+                    new SimpleDateFormat("hh:mm aa  MM-dd-yyyy").format(currentTimestamp) + "\r\n";
 
             if (new File("log.txt").exists()) {
                 // If the file already exists, append the new log to the end.

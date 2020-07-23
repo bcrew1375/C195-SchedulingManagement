@@ -1,5 +1,7 @@
 package main_menu;
 
+import database.AppointmentRecord;
+import database.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,11 +45,17 @@ public class AddAppointmentController {
     Calendar startTime;
     Calendar endTime;
 
-    Integer year;
-    Integer month;
-    Integer day;
-    Integer hour;
-    Integer minute;
+    Integer startYear;
+    Integer startMonth;
+    Integer startDay;
+    Integer startHour;
+    Integer startMinute;
+
+    Integer endYear;
+    Integer endMonth;
+    Integer endDay;
+    Integer endHour;
+    Integer endMinute;
 
     @FXML
     void initialize() {
@@ -71,64 +79,74 @@ public class AddAppointmentController {
 
     @FXML
     void AddButton() {
+        int scheduleConflict;
+
         try {
-            year = startDatePicker.getValue().getYear();
-            month = startDatePicker.getValue().getMonthValue();
-            day = startDatePicker.getValue().getDayOfMonth();
-            hour = Integer.parseInt(startHourTextField.getText());
-            minute = Integer.parseInt(startMinuteTextField.getText());
+            startYear = startDatePicker.getValue().getYear();
+            startMonth = startDatePicker.getValue().getMonthValue();
+            startDay = startDatePicker.getValue().getDayOfMonth();
+            startHour = Integer.parseInt(startHourTextField.getText());
+            startMinute = Integer.parseInt(startMinuteTextField.getText());
 
-            if ((hour < 1 || hour > 12) || (minute < 0 || minute > 59)) {
+            if ((startHour < 1 || startHour > 12) || (startMinute < 0 || startMinute > 59)) {
                 utility.displayError("Hour must be between 1 and 12. Minute must be between 0 and 59.");
             } else {
+                startTime.set(Calendar.HOUR, startHour);
                 if (startAmPmChoiceBox.getValue() == "AM") {
-                    if (hour == 12)
-                        hour = 0;
-                    startTime.set(Calendar.HOUR_OF_DAY, hour);
+                    startTime.set(Calendar.AM_PM, Calendar.AM);
                 } else if (startAmPmChoiceBox.getValue() == "PM") {
-                    if (hour != 12)
-                        hour += 12;
-                    startTime.set(Calendar.HOUR_OF_DAY, hour + 12);
+                    startTime.set(Calendar.AM_PM, Calendar.PM);
                 } else {
                     utility.displayError("There was an error with the AM/PM selection.");
                 }
             }
 
-            startTime.set(Calendar.MINUTE, minute);
-            startTime.set(Calendar.YEAR, year);
-            startTime.set(Calendar.MONTH, month - 1);
-            startTime.set(Calendar.DAY_OF_MONTH, day);
+            startTime.set(Calendar.MINUTE, startMinute);
+            startTime.set(Calendar.YEAR, startYear);
+            startTime.set(Calendar.MONTH, startMonth - 1);
+            startTime.set(Calendar.DAY_OF_MONTH, startDay);
 
-            year = endDatePicker.getValue().getYear();
-            month = endDatePicker.getValue().getMonthValue();
-            day = endDatePicker.getValue().getDayOfMonth();
-            hour = Integer.parseInt(endHourTextField.getText());
-            minute = Integer.parseInt(endMinuteTextField.getText());
+            endYear = endDatePicker.getValue().getYear();
+            endMonth = endDatePicker.getValue().getMonthValue();
+            endDay = endDatePicker.getValue().getDayOfMonth();
+            endHour = Integer.parseInt(endHourTextField.getText());
+            endMinute = Integer.parseInt(endMinuteTextField.getText());
 
-            if ((hour < 1 || hour > 12) || (minute < 0 || minute > 59)) {
+            if ((endHour < 1 || endHour > 12) || (endMinute < 0 || endMinute > 59)) {
                 utility.displayError("Hour must be between 1 and 12. Minute must be between 0 and 59.");
             } else {
+                endTime.set(Calendar.HOUR, endHour);
                 if (endAmPmChoiceBox.getValue() == "AM") {
-                    if (hour == 12)
-                        hour = 0;
-                    endTime.set(Calendar.HOUR_OF_DAY, hour);
+                    endTime.set(Calendar.AM_PM, Calendar.AM);
                 } else if (endAmPmChoiceBox.getValue() == "PM") {
-                    if (hour != 12)
-                        hour += 12;
-                    endTime.set(Calendar.HOUR_OF_DAY, hour);
+                    endTime.set(Calendar.AM_PM, Calendar.PM);
                 } else {
                     utility.displayError("There was an error with the AM/PM selection.");
                 }
             }
 
-            endTime.set(Calendar.MINUTE, minute);
-            endTime.set(Calendar.YEAR, year);
-            endTime.set(Calendar.MONTH, month - 1);
-            endTime.set(Calendar.DAY_OF_MONTH, day);
+            endTime.set(Calendar.MINUTE, endMinute);
+            endTime.set(Calendar.YEAR, endYear);
+            endTime.set(Calendar.MONTH, endMonth - 1);
+            endTime.set(Calendar.DAY_OF_MONTH, endDay);
 
-            database.addAppointmentRecord(database.getSelectedCustomer().getCustomerId(), database.getCurrentUserId(),
-                    meetingTypeTextField.getText(), Timestamp.from(startTime.toInstant()), Timestamp.from(endTime.toInstant()));
-            meetingTypeTextField.getScene().getWindow().hide();
+            if (startTime.after(endTime)) {
+                utility.displayError("The appointment end time can't be before the start.");
+            }
+            else {
+
+                scheduleConflict = checkAppointmentConflict();
+
+                if (scheduleConflict == 0) {
+                    database.addAppointmentRecord(database.getSelectedCustomer().getCustomerId(), database.getCurrentUserId(),
+                            meetingTypeTextField.getText(), Timestamp.from(startTime.toInstant()), Timestamp.from(endTime.toInstant()));
+                    meetingTypeTextField.getScene().getWindow().hide();
+                } else if (scheduleConflict == 1) {
+                    utility.displayError("This appointment falls outside business hours.");
+                } else if (scheduleConflict == 2) {
+                    utility.displayError("This appointment conflicts with an already scheduled appointment.");
+                }
+            }
         }
         catch (Exception e) {
             utility.displayError("There was an error setting the appointment.");
@@ -138,5 +156,41 @@ public class AddAppointmentController {
     @FXML
     void CancelButton() {
         meetingTypeTextField.getScene().getWindow().hide();
+    }
+
+    int checkAppointmentConflict() {
+        ObservableList<Customer> customerList;
+        ObservableList<AppointmentRecord> appointmentList;
+        Timestamp addedAppointmentStart;
+        Timestamp addedAppointmentEnd;
+        Timestamp currentAppointmentStart;
+        Timestamp currentAppointmentEnd;
+
+        customerList = database.getCombinedCustomerList();
+        addedAppointmentStart = Timestamp.from(startTime.toInstant());
+        addedAppointmentEnd = Timestamp.from(endTime.toInstant());
+
+        // If there is a conflict with business hours.
+        if ((startTime.get(Calendar.HOUR_OF_DAY) < 8) || (startTime.get(Calendar.HOUR_OF_DAY) > 16) ||
+                (endTime.get(Calendar.HOUR_OF_DAY) < 8) || (endTime.get(Calendar.HOUR_OF_DAY) > 16)) {
+            return 1;
+        }
+
+        for (int i = 0; i < customerList.size(); i++) {
+            appointmentList = customerList.get(i).getAppointmentList();
+
+            for (int j = 0; j < appointmentList.size(); j++) {
+                currentAppointmentStart = customerList.get(i).getAppointmentList().get(j).getStart();
+                currentAppointmentEnd = customerList.get(i).getAppointmentList().get(j).getEnd();
+
+                // If there is a schedule conflict with other appointments.
+                if (((addedAppointmentStart.compareTo(currentAppointmentStart) >= 0) && (addedAppointmentStart.compareTo(currentAppointmentEnd) <= 0))
+                        || (addedAppointmentEnd.compareTo(currentAppointmentStart) >= 0) && (addedAppointmentEnd.compareTo(currentAppointmentEnd) <= 0)) {
+                    return 2;
+                }
+            }
+        }
+
+        return 0;
     }
 }
