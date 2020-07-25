@@ -70,8 +70,6 @@ public class MainMenuController {
         customerTableView.setItems(customerList);
         customerTableView.getSelectionModel().select(0);
         refreshAppointmentList();
-
-        //customerNameColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
 
     @FXML

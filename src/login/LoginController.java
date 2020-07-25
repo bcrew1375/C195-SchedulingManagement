@@ -1,7 +1,9 @@
 package login;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,7 +39,7 @@ public class LoginController {
     @FXML
     private void initialize() {
 
-        //Locale.setDefault(new Locale("es_es"));
+        Locale.setDefault(new Locale("es"));
 
         utility = new Utility();
 
@@ -46,22 +48,20 @@ public class LoginController {
         String lang = language.getLocale().getDisplayLanguage();
 
         // Change login stage text if the locale is Spanish.
-        if (language.getLocale().getDisplayLanguage().equals("es_es") || language.getLocale().getDisplayLanguage().equals("English")) {
-            titleLabel.setText(language.getString("TitleLabel"));
-            loginLabel.setText(language.getString("LoginLabel"));
-            passwordLabel.setText(language.getString("PasswordLabel"));
-            loginTextbox.setPromptText(language.getString("LoginTextbox"));
-            passwordTextbox.setPromptText(language.getString("PasswordTextbox"));
+        titleLabel.setText(language.getString("TitleLabel"));
+        loginLabel.setText(language.getString("LoginLabel"));
+        passwordLabel.setText(language.getString("PasswordLabel"));
+        loginTextbox.setPromptText(language.getString("LoginTextbox"));
+        passwordTextbox.setPromptText(language.getString("PasswordTextbox"));
 
-            queryError = language.getString("QueryError");
-            noMatchError = language.getString("NoMatchError");
-        }
+        queryError = language.getString("QueryError");
+        noMatchError = language.getString("NoMatchError");
 
         database = Database.getInstance();
     }
 
     @FXML
-    private void loginButtonClicked() {
+    private void loginButtonClicked() throws IOException {
 
         database.constructDatabaseRecords();
 
@@ -88,14 +88,14 @@ public class LoginController {
         }
     }
 
-    private void recordLogin() {
+    private void recordLogin() throws IOException {
         FileOutputStream logFileStream;
         String logString;
         Timestamp currentTimestamp;
 
         currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-        try {
+        //try {
             logString = "User " + loginTextbox.getText() + " logged in at " +
                     new SimpleDateFormat("hh:mm aa  MM-dd-yyyy").format(currentTimestamp) + "\r\n";
 
@@ -107,8 +107,8 @@ public class LoginController {
                 logFileStream = new FileOutputStream("log.txt");
                 logFileStream.write(logString.getBytes());
             }
-        } catch (Exception e) {
+        /*} catch (Exception e) {
 
-        }
+        }*/
     }
 }
