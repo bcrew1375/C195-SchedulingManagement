@@ -45,3 +45,5 @@ User test logged in at 2020-07-20 02:52:10.515
 User test logged in at 07:35 AM  07-25-2020
 User test logged in at 07:36 AM  07-25-2020
 User test logged in at 07:43 AM  07-25-2020
+User test logged in at 07:47 AM  07-25-2020
+User test logged in at 07:50 AM  07-25-2020
