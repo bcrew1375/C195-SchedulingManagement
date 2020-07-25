@@ -2,11 +2,10 @@ package main_menu;
 
 import java.util.Calendar;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -15,8 +14,6 @@ import javafx.scene.control.TableView;
 import database.AppointmentRecord;
 import database.Customer;
 import database.Database;
-import javafx.scene.control.cell.PropertyValueFactory;
-import org.omg.CORBA.portable.ValueFactory;
 
 public class ReportsController {
     @FXML
@@ -29,12 +26,25 @@ public class ReportsController {
     TableColumn typeByMonthTypeColumn;
     @FXML
     TableColumn typeByMonthAmountColumn;
+    @FXML
+    Label schedulesLabel;
+    @FXML
+    ChoiceBox schedulesConsultantChoiceBox;
+    @FXML
+    TableView schedulesTableView;
+    @FXML
+    TableColumn schedulesTypeColumn;
+    @FXML
+    TableColumn schedulesStartColumn;
+    @FXML
+    TableColumn schedulesEndColumn;
 
     Database database;
 
     ObservableList<Customer> customerList;
     ObservableList<String> typeByMonthChoices;
     ObservableList<TypeByMonth> typeByMonthAppointmentList;
+    ObservableList<AppointmentRecord> schedulesAppointmentList;
 
     @FXML
     private void initialize() {
@@ -67,9 +77,15 @@ public class ReportsController {
 
     @FXML
     private void typeByMonthButtonClicked() {
+        schedulesLabel.setVisible(false);
+        schedulesConsultantChoiceBox.setVisible(false);
+        schedulesTableView.setVisible(false);
+
         typeByMonthLabel.setVisible(true);
         typeByMonthChoiceBox.setVisible(true);
         typeByMonthTableView.setVisible(true);
+
+        typeByMonthChoiceChange();
     }
 
     @FXML
@@ -111,7 +127,27 @@ public class ReportsController {
 
     @FXML
     private void schedulesButtonClicked() {
+        typeByMonthLabel.setVisible(false);
+        typeByMonthChoiceBox.setVisible(false);
+        typeByMonthTableView.setVisible(false);
 
+        schedulesLabel.setVisible(true);
+        schedulesConsultantChoiceBox.setVisible(true);
+        schedulesTableView.setVisible(true);
+    }
+
+    @FXML
+    private void schedulesConsultantChoiceChange() {
+        ObservableList<AppointmentRecord> appointmentList;
+
+        schedulesAppointmentList.clear();
+
+        for (int i = 0; i < customerList.size(); i++) {
+            appointmentList = customerList.get(i).getAppointmentList();
+
+            for (int j = 0; j < appointmentList.size(); j++) {
+            }
+        }
     }
 
     @FXML

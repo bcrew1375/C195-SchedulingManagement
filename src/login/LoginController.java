@@ -63,6 +63,8 @@ public class LoginController {
     @FXML
     private void loginButtonClicked() {
 
+        database.constructDatabaseRecords();
+
         switch (database.checkLoginCredentials(loginTextbox.getText(), passwordTextbox.getText())) {
             case 0: {
                 utility.displayError(noMatchError);
@@ -74,7 +76,6 @@ public class LoginController {
             }
             case 2: {
                 recordLogin();
-                database.constructDatabaseRecords();
                 mainMenuStage = utility.LoadFXML("/fxml/MainMenu.fxml");
                 loginTextbox.getScene().getWindow().hide();
                 mainMenuStage.show();

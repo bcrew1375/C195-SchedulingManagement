@@ -6,6 +6,7 @@ import java.time.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javafx.fxml.FXML;
 import utility.Utility;
 
 public class Database {
@@ -14,6 +15,7 @@ public class Database {
     private ObservableList<AppointmentRecord> appointmentRecords;
     private ObservableList<CustomerRecord> customerRecords;
     private ObservableList<Customer> combinedCustomerRecords;
+    private ObservableList<UserRecord> userList;
 
     private Connection databaseConnection;
     private ResultSet results;
@@ -32,6 +34,7 @@ public class Database {
         appointmentRecords = FXCollections.observableArrayList();
         customerRecords = FXCollections.observableArrayList();
         combinedCustomerRecords = FXCollections.observableArrayList();
+        userList = FXCollections.observableArrayList();
 
         utility = new Utility();
 
@@ -59,15 +62,12 @@ public class Database {
         String dbUserName, dbPassword;
 
         try {
-            results = sqlStatement.executeQuery("SELECT userId, userName, password FROM user");
-
-            while (results.next()) {
-                dbUserName = results.getString("userName");
-                dbPassword = results.getString("password");
-
+            for (int i = 0; i < userList.size(); i++) {
+                dbUserName = userList.get(i).getUserName();
+                dbPassword = userList.get(i).getPassword();
                 // If the entered userName and password matches an entry in the database, return success code.
                 if (userName.matches(dbUserName) && password.matches(dbPassword)) {
-                    currentUserId = results.getInt("userId");
+                    currentUserId = userList.get(i).getUserId();
                     return 2;
                 }
             }
@@ -85,6 +85,7 @@ public class Database {
         appointmentRecords.clear();
         customerRecords.clear();
         combinedCustomerRecords.clear();
+        userList.clear();
 
         try {
             results = sqlStatement.executeQuery("SELECT * FROM customer");
@@ -112,6 +113,13 @@ public class Database {
             for (int i = 0; i < customerRecords.size(); i++) {
                 combinedCustomerRecords.add(new Customer(customerRecords.get(i)));
             }
+
+            results = sqlStatement.executeQuery("SELECT * FROM user");
+
+            while (results.next()) {
+                userList.add(new UserRecord(results.getInt("userId"), results.getString("userName"), results.getString("password")));
+            }
+
         } catch (Exception e) {
             utility.displayError("Error creating local database objects.");
         }
