@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.stage.Stage?>
+
+<Stage xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_menu.ReportsController">
+    <scene>
+        <Scene>
+            <AnchorPane>
+            <children>
+               <VBox layoutX="74.0" layoutY="-36.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <children>
+                     <Label text="Reports" textFill="BLUE">
+                        <font>
+                           <Font size="24.0" />
+                        </font>
+                     </Label>
+                     <HBox spacing="50.0">
+                        <children>
+                           <GridPane hgap="20.0">
+                             <columnConstraints>
+                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                             </columnConstraints>
+                             <rowConstraints>
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                             </rowConstraints>
+                              <children>
+                                 <Label text="Available Reports:">
+                                    <font>
+                                       <Font size="18.0" />
+                                    </font>
+                                 </Label>
+                                 <Button mnemonicParsing="false" onAction="#typeByMonthButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Appointment Types By Month" GridPane.columnIndex="1" />
+                                 <Button mnemonicParsing="false" onAction="#schedulesButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Consultant Schedules" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button mnemonicParsing="false" onAction="#appointmentsPerCustomerButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Appointments Per Customer" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <ChoiceBox prefWidth="150.0" visible="false" GridPane.rowIndex="2" />
+                                 <Label text="Consultant" visible="false" GridPane.rowIndex="1">
+                                    <font>
+                                       <Font size="18.0" />
+                                    </font>
+                                 </Label>
+                                 <ChoiceBox fx:id="typeByMonthChoiceBox" onAction="#typeByMonthChoiceChange" prefWidth="150.0" visible="false" GridPane.rowIndex="2" />
+                                 <Label fx:id="typeByMonthLabel" text="Month" visible="false" GridPane.rowIndex="1">
+                                    <font>
+                                       <Font size="18.0" />
+                                    </font>
+                                 </Label>
+                              </children>
+                           </GridPane>
+                           <VBox spacing="10.0" />
+                        </children>
+                     </HBox>
+                     <StackPane>
+                        <children>
+                           <Pane style="-fx-border-color: black;" />
+                           <TableView fx:id="typeByMonthTableView" visible="false">
+                             <columns>
+                               <TableColumn fx:id="typeByMonthTypeColumn" prefWidth="250.0" text="Type" />
+                               <TableColumn fx:id="typeByMonthAmountColumn" prefWidth="250.0" text="Amount" />
+                             </columns>
+                           </TableView>
+                           <TableView prefHeight="200.0" prefWidth="200.0" visible="false">
+                             <columns>
+                               <TableColumn prefWidth="150.0" text="Type" />
+                               <TableColumn prefWidth="175.0" text="Start" />
+                                 <TableColumn prefWidth="175.0" text="End" />
+                             </columns>
+                           </TableView>
+                           <TableView prefHeight="200.0" prefWidth="200.0" visible="false">
+                             <columns>
+                               <TableColumn prefWidth="250.0" text="Customer Name" />
+                               <TableColumn prefWidth="250.0" text="Number of Appointments" />
+                             </columns>
+                           </TableView>
+                        </children>
+                     </StackPane>
+                  </children>
+                  <padding>
+                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+               </VBox>
+            </children></AnchorPane>
+        </Scene>
+    </scene>
+</Stage>
