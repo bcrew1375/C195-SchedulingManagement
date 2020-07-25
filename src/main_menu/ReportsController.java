@@ -77,7 +77,7 @@ public class ReportsController {
         Calendar startTime;
         ObservableList<AppointmentRecord> appointmentList;
 
-        typeByMonthAppointmentList.removeAll();
+        typeByMonthAppointmentList.clear();
 
         startTime = Calendar.getInstance();
 

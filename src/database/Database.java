@@ -81,10 +81,10 @@ public class Database {
     // Create local objects for database records.
     public void constructDatabaseRecords() {
 
-        addressRecords.removeAll();
-        appointmentRecords.removeAll();
-        customerRecords.removeAll();
-        combinedCustomerRecords.removeAll();
+        addressRecords.clear();
+        appointmentRecords.clear();
+        customerRecords.clear();
+        combinedCustomerRecords.clear();
 
         try {
             results = sqlStatement.executeQuery("SELECT * FROM customer");

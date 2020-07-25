@@ -48,9 +48,9 @@
                                        <Font size="18.0" />
                                     </font>
                                  </Label>
-                                 <Button mnemonicParsing="false" onAction="#typeByMonthButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Appointment Types By Month" GridPane.columnIndex="1" />
-                                 <Button mnemonicParsing="false" onAction="#schedulesButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Consultant Schedules" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                 <Button mnemonicParsing="false" onAction="#appointmentsPerCustomerButtonClicked" prefHeight="25.0" prefWidth="200.0" text="Appointments Per Customer" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 <Button mnemonicParsing="false" onAction="#typeByMonthButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Appointment Types By Month" GridPane.columnIndex="1" />
+                                 <Button mnemonicParsing="false" onAction="#schedulesButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Consultant Schedules" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                 <Button mnemonicParsing="false" onAction="#appointmentsPerCustomerButtonClicked" prefHeight="25.0" prefWidth="250.0" text="Appointments Per Customer" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                  <ChoiceBox prefWidth="150.0" visible="false" GridPane.rowIndex="2" />
                                  <Label text="Consultant" visible="false" GridPane.rowIndex="1">
                                     <font>
