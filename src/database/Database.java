@@ -2,15 +2,10 @@ package database;
 
 import java.sql.*;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.TimeZone;
 
-import database.CustomerRecord;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import utility.Utility;
 
 public class Database {
@@ -24,10 +19,10 @@ public class Database {
     private ResultSet results;
     private Statement sqlStatement;
 
-    private Utility utility = new Utility();
+    private Utility utility;
 
-    private Customer selectedCustomer;
     private AppointmentRecord selectedAppointment;
+    private Customer selectedCustomer;
 
     private int currentUserId;
 
@@ -38,13 +33,14 @@ public class Database {
         customerRecords = FXCollections.observableArrayList();
         combinedCustomerRecords = FXCollections.observableArrayList();
 
+        utility = new Utility();
+
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
             databaseConnection = DriverManager.getConnection("jdbc:mysql://3.227.166.251:3306/U07b4Z", "U07b4Z", "53688979772");
             sqlStatement = databaseConnection.createStatement();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("There was an error connecting to the database.");
             javafx.application.Platform.exit();
         }
@@ -75,8 +71,7 @@ public class Database {
                     return 2;
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return 1;
         }
 
@@ -117,8 +112,7 @@ public class Database {
             for (int i = 0; i < customerRecords.size(); i++) {
                 combinedCustomerRecords.add(new Customer(customerRecords.get(i)));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error creating local database objects.");
         }
     }
@@ -136,9 +130,9 @@ public class Database {
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             statement.setString(1, address);
-            statement.setString(2,"");
-            statement.setInt(3,1);
-            statement.setString(4,"");
+            statement.setString(2, "");
+            statement.setInt(3, 1);
+            statement.setString(4, "");
             statement.setString(5, phoneNumber);
             statement.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             statement.setString(7, "");
@@ -177,8 +171,7 @@ public class Database {
             combinedCustomerRecords.add(new Customer(addedCustomerRecord));
 
             //constructDatabaseRecords();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error adding customer to database");
         }
     }
@@ -224,8 +217,7 @@ public class Database {
 
             combinedCustomerRecords.remove(customer);
             //constructDatabaseRecords();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error deleting customer from database.");
         }
     }
@@ -278,8 +270,7 @@ public class Database {
             }
 
             combinedCustomerRecords.set(combinedCustomerRecords.indexOf(selectedCustomer), customer);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error updating customer in database.");
         }
     }
@@ -315,8 +306,7 @@ public class Database {
 
             combinedCustomerRecords.get(combinedCustomerRecords.indexOf(selectedCustomer)).getAppointmentList().add(new AppointmentRecord(
                     appointmentId, customerId, userId, type, "", start, end));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error adding appointment to database.");
         }
     }
@@ -326,8 +316,7 @@ public class Database {
             sqlStatement.executeUpdate("DELETE FROM appointment WHERE appointmentId = " + appointment.getAppointmentId());
 
             selectedCustomer.getAppointmentList().remove(appointment);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error deleting appointment from database.");
         }
     }
@@ -352,8 +341,7 @@ public class Database {
             appointmentIndex = combinedCustomerRecords.get(customerIndex).getAppointmentList().indexOf(appointment);
 
             combinedCustomerRecords.get(customerIndex).getAppointmentList().set(appointmentIndex, appointment);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("Error updating appointment in database.");
         }
     }
@@ -382,9 +370,13 @@ public class Database {
         return this.selectedCustomer;
     }
 
-    public AppointmentRecord getSelectedAppointment() { return selectedAppointment; }
+    public AppointmentRecord getSelectedAppointment() {
+        return selectedAppointment;
+    }
 
-    public void setSelectedAppointment(AppointmentRecord selectedAppointment) { this.selectedAppointment = selectedAppointment; }
+    public void setSelectedAppointment(AppointmentRecord selectedAppointment) {
+        this.selectedAppointment = selectedAppointment;
+    }
 
     public int getCurrentUserId() {
         return currentUserId;

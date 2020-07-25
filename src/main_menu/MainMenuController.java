@@ -1,20 +1,16 @@
 package main_menu;
 
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableView;
-
-import database.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import utility.Utility;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import database.*;
+import utility.Utility;
 
 public class MainMenuController {
 
@@ -33,23 +29,25 @@ public class MainMenuController {
     @FXML
     private TableColumn<AppointmentRecord, String> appointmentTypeColumn;
     @FXML
-    private TableColumn<AppointmentRecord, LocalDateTime> appointmentStartColumn;
+    private TableColumn<AppointmentRecord, String> appointmentStartColumn;
     @FXML
-    private TableColumn<AppointmentRecord, LocalDateTime> appointmentEndColumn;
+    private TableColumn<AppointmentRecord, String> appointmentEndColumn;
 
-    Database database;
+    private Database database;
 
-    ObservableList<Customer> customerList;
+    private ObservableList<Customer> customerList;
 
-    Stage addCustomerStage;
-    Stage updateCustomerStage;
-    Stage addAppointmentStage;
-    Stage updateAppointmentStage;
+    private Stage addCustomerStage;
+    private Stage updateCustomerStage;
+    private Stage addAppointmentStage;
+    private Stage updateAppointmentStage;
+    private Stage calendarStage;
+    private Stage reportsStage;
 
-    Utility utility;
+    private Utility utility;
 
     @FXML
-    void initialize() {
+    private void initialize() {
         database = Database.getInstance();
         utility = new Utility();
 
@@ -73,27 +71,27 @@ public class MainMenuController {
         customerTableView.getSelectionModel().select(0);
         refreshAppointmentList();
 
-        customerNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+        //customerNameColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
 
     @FXML
-    void customersAddButton() {
+    private void customersAddButton() {
         addCustomerStage = utility.LoadFXML("/fxml/AddCustomer.fxml");
 
-        addCustomerStage.initModality(Modality.WINDOW_MODAL);
+        addCustomerStage.initModality(Modality.APPLICATION_MODAL);
         addCustomerStage.showAndWait();
 
         refreshCustomerList();
     }
 
     @FXML
-    void customersUpdateButton() {
+    private void customersUpdateButton() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
             updateCustomerStage = utility.LoadFXML("/fxml/UpdateCustomer.fxml");
 
-            updateCustomerStage.initModality(Modality.WINDOW_MODAL);
+            updateCustomerStage.initModality(Modality.APPLICATION_MODAL);
             updateCustomerStage.showAndWait();
 
             refreshCustomerList();
@@ -101,7 +99,7 @@ public class MainMenuController {
     }
 
     @FXML
-    void customersDeleteButton() {
+    private void customersDeleteButton() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
@@ -113,13 +111,13 @@ public class MainMenuController {
     }
 
     @FXML
-    void appointmentAddButton() {
+    private void appointmentAddButton() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
             addAppointmentStage = utility.LoadFXML("/fxml/AddAppointment.fxml");
 
-            addAppointmentStage.initModality(Modality.WINDOW_MODAL);
+            addAppointmentStage.initModality(Modality.APPLICATION_MODAL);
             addAppointmentStage.showAndWait();
 
             refreshCustomerList();
@@ -128,14 +126,14 @@ public class MainMenuController {
     }
 
     @FXML
-    void appointmentUpdateButton() {
+    private void appointmentUpdateButton() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
         database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedAppointment() != null) {
             updateAppointmentStage = utility.LoadFXML("/fxml/UpdateAppointment.fxml");
 
-            updateAppointmentStage.initModality(Modality.WINDOW_MODAL);
+            updateAppointmentStage.initModality(Modality.APPLICATION_MODAL);
             updateAppointmentStage.showAndWait();
 
             refreshCustomerList();
@@ -144,7 +142,7 @@ public class MainMenuController {
     }
 
     @FXML
-    void appointmentDeleteButton() {
+    private void appointmentDeleteButton() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
         database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
@@ -157,19 +155,34 @@ public class MainMenuController {
     }
 
     @FXML
-    void refreshAppointmentList() {
+    private void calendarButton() {
+        calendarStage = utility.LoadFXML("/fxml/Calendar.fxml");
+
+        calendarStage.initModality(Modality.APPLICATION_MODAL);
+        calendarStage.showAndWait();
+    }
+
+    @FXML
+    private void reportsButton() {
+        reportsStage = utility.LoadFXML("/fxml/Reports.fxml");
+
+        reportsStage.initModality(Modality.APPLICATION_MODAL);
+        reportsStage.showAndWait();
+    }
+
+    @FXML
+    private void refreshAppointmentList() {
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
             appointmentTableView.setItems(database.getSelectedCustomer().getAppointmentList());
-        }
-        else {
+        } else {
             appointmentTableView.setItems(null);
         }
     }
 
     @FXML
-    void refreshCustomerList() {
+    private void refreshCustomerList() {
         customerList = database.getCombinedCustomerList();
         customerTableView.setItems(customerList);
     }

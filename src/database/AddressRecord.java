@@ -3,6 +3,7 @@ package database;
 public class AddressRecord {
 
     private int addressId;
+
     private String address;
     private String phone;
 

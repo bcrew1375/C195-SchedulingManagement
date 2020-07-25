@@ -1,16 +1,12 @@
 package main_menu;
 
-import database.Customer;
-import database.CustomerRecord;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
+import database.Customer;
 import database.Database;
 
 public class AddCustomerController {
-    Database database;
-
     @FXML
     TextField customerNameTextField;
     @FXML
@@ -18,13 +14,15 @@ public class AddCustomerController {
     @FXML
     TextField phoneNumberTextField;
 
+    Database database;
+
     @FXML
-    void initialize() {
+    private void initialize() {
         database = Database.getInstance();
     }
 
     @FXML
-    void AddButton() {
+    private void AddButton() {
         database.addCustomerRecord(customerNameTextField.getText(), addressTextField.getText(), phoneNumberTextField.getText());
 
         for (int i = 0; i < database.getCustomerRecords().size(); i++) {
@@ -37,7 +35,7 @@ public class AddCustomerController {
     }
 
     @FXML
-    void CancelButton() {
+    private void CancelButton() {
         customerNameTextField.getScene().getWindow().hide();
     }
 }

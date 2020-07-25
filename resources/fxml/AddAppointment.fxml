@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.stage.Stage?>
 
-<Stage title="Add Customer" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_menu.AddAppointmentController">
+<Stage title="Add Appointment" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_menu.AddAppointmentController">
    <scene>
       <Scene>
          <root>

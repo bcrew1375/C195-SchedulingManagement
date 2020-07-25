@@ -6,22 +6,20 @@
 package utility;
 
 import java.io.IOException;
-import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-import javafx.scene.control.Alert;
-import javafx.scene.input.KeyEvent;
 
 /**
- *
  * @author Benjamin Crew
  */
 public class Utility {
 
-    public Stage LoadFXML (String fxmlFilename) {
+    public Stage LoadFXML(String fxmlFilename) {
         FXMLLoader loadFxml;
         Stage stage;
 
@@ -30,8 +28,7 @@ public class Utility {
             loadFxml.setLocation(getClass().getResource(fxmlFilename));
             stage = loadFxml.load();
             return stage;
-        }
-        catch (IOException ioError) {
+        } catch (IOException ioError) {
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle("Error");
             error.setContentText("Failed to load FXML.");
@@ -42,24 +39,24 @@ public class Utility {
     }
 
     // returns true if a given string contains a decimal point.
-    public Boolean checkDecimalPoint (String number) {
+    public Boolean checkDecimalPoint(String number) {
         return number.contains(".");
     }
 
-    public void checkDecimalKey (KeyEvent event) {
+    public void checkDecimalKey(KeyEvent event) {
         String key = event.getCharacter();
         if (!key.matches("[0-9]") && !key.matches("\\.")) {
             event.consume();
         }
     }
 
-    public void checkIntegerKey (KeyEvent event) {
+    public void checkIntegerKey(KeyEvent event) {
         String key = event.getCharacter();
         if (!key.matches("[0-9]")) {
             event.consume();
         }
     }
-    
+
     public void displayError(String errorText) {
         Alert error = new Alert(Alert.AlertType.ERROR);
         error.setTitle("Error");
@@ -83,25 +80,24 @@ public class Utility {
         confirm.showAndWait();
         return confirm;
     }
-    public Boolean validateDouble (String number) {
+
+    public Boolean validateDouble(String number) {
         Double inputValue;
-        
+
         try {
-            inputValue = Double.parseDouble(number);            
-        }
-        catch (Exception error) {
+            inputValue = Double.parseDouble(number);
+        } catch (Exception error) {
             return false;
         }
         return true;
     }
 
-    public Boolean validateInteger (String number) {
+    public Boolean validateInteger(String number) {
         Integer inputValue;
-        
+
         try {
-            inputValue = Integer.parseInt(number);            
-        }
-        catch (Exception error) {
+            inputValue = Integer.parseInt(number);
+        } catch (Exception error) {
             return false;
         }
         return true;

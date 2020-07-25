@@ -2,17 +2,18 @@ package database;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 
 public class AppointmentRecord {
     private int appointmentId;
     private int customerId;
     private int userId;
+
     private String type;
     private String url;
+
     private Timestamp start;
     private Timestamp end;
+
     private String displayStartTime;
     private String displayEndTime;
 
@@ -73,8 +74,7 @@ public class AppointmentRecord {
         return start;
     }
 
-    public void setStart(Timestamp start)
-    {
+    public void setStart(Timestamp start) {
         this.start = start;
         this.displayStartTime = new SimpleDateFormat("hh:mm aa  MM-dd-yyyy").format(this.start);
     }
@@ -88,11 +88,19 @@ public class AppointmentRecord {
         this.displayEndTime = new SimpleDateFormat("hh:mm aa  MM-dd-yyyy").format(this.end);
     }
 
-    public String getDisplayStartTime() { return displayStartTime; }
+    public String getDisplayStartTime() {
+        return displayStartTime;
+    }
 
-    public void setDisplayStartTime(String displayStartTime) { this.displayStartTime = displayStartTime; }
+    public void setDisplayStartTime(String displayStartTime) {
+        this.displayStartTime = displayStartTime;
+    }
 
-    public String getDisplayEndTime() { return displayEndTime; }
+    public String getDisplayEndTime() {
+        return displayEndTime;
+    }
 
-    public void setDisplayEndTime(String displayEndTime) { this.displayEndTime = displayEndTime; }
+    public void setDisplayEndTime(String displayEndTime) {
+        this.displayEndTime = displayEndTime;
+    }
 }

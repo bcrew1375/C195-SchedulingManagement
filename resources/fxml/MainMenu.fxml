@@ -27,15 +27,15 @@
                            <Font size="24.0" />
                         </font>
                      </Label>
-                     <Label text="Business hours: 8:00 A.M. to 5:00 P.M. EST">
+                     <Label text="Business hours: 8:00 A.M. to 5:00 P.M. EST  Monday through Friday">
                         <font>
                            <Font size="18.0" />
                         </font>
                      </Label>
                      <HBox spacing="20.0">
                         <children>
-                           <Button fx:id="calendarButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Calendar" />
-                           <Button fx:id="reportsButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Reports" />
+                           <Button mnemonicParsing="false" onAction="#calendarButton" prefHeight="25.0" prefWidth="100.0" text="Calendar" />
+                           <Button mnemonicParsing="false" onAction="#reportsButton" prefHeight="25.0" prefWidth="100.0" text="Reports" />
                         </children>
                      </HBox>
                      <VBox spacing="10.0" style="-fx-border-color: black;">
@@ -47,9 +47,9 @@
                            </Label>
                            <TableView fx:id="customerTableView" onKeyPressed="#refreshAppointmentList" onKeyReleased="#refreshAppointmentList" onKeyTyped="#refreshAppointmentList" onMouseClicked="#refreshAppointmentList" prefHeight="160.0">
                              <columns>
-                               <TableColumn fx:id="customerNameColumn" prefWidth="292.0" text="Customer Name" />
-                                 <TableColumn fx:id="customerAddressColumn" prefWidth="293.0" text="Address" />
-                                 <TableColumn fx:id="customerPhoneNumberColumn" prefWidth="292.0" text="Phone Number" />
+                               <TableColumn fx:id="customerNameColumn" prefWidth="200.0" text="Customer Name" />
+                                 <TableColumn fx:id="customerAddressColumn" prefWidth="250.0" text="Address" />
+                                 <TableColumn fx:id="customerPhoneNumberColumn" prefWidth="200.0" text="Phone Number" />
                              </columns>
                               <padding>
                                  <Insets bottom="10.0" />
@@ -66,9 +66,9 @@
                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                               <children>
-                                 <Button id="MAIN_MENU_PARTS_ADD_BUTTON" mnemonicParsing="false" onAction="#customersAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PARTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#customersUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PARTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#customersDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#customersAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#customersUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#customersDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                               </children>
                            </GridPane>
                         </children>
@@ -83,11 +83,11 @@
                                  <Font name="System Bold" size="20.0" />
                               </font>
                            </Label>
-                           <TableView id="MAIN_MENU_PRODUCTS_TABLE" fx:id="appointmentTableView" prefHeight="160.0">
+                           <TableView fx:id="appointmentTableView" prefHeight="160.0">
                               <columns>
-                                 <TableColumn fx:id="appointmentTypeColumn" prefWidth="292.0" text="Type" />
-                                 <TableColumn fx:id="appointmentStartColumn" prefWidth="293.0" text="Start" />
-                                 <TableColumn fx:id="appointmentEndColumn" prefWidth="292.0" text="End" />
+                                 <TableColumn fx:id="appointmentTypeColumn" prefWidth="200.0" text="Type" />
+                                 <TableColumn fx:id="appointmentStartColumn" prefWidth="225.0" text="Start" />
+                                 <TableColumn fx:id="appointmentEndColumn" prefWidth="225.0" text="End" />
                               </columns>
                            </TableView>
                            <GridPane>
@@ -101,9 +101,9 @@
                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               </rowConstraints>
                               <children>
-                                 <Button id="MAIN_MENU_PRODUCTS_ADD_BUTTON" mnemonicParsing="false" onAction="#appointmentAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PRODUCTS_MODIFY_BUTTON" mnemonicParsing="false" onAction="#appointmentUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                                 <Button id="MAIN_MENU_PRODUCTS_DELETE_BUTTON" mnemonicParsing="false" onAction="#appointmentDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#appointmentAddButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#appointmentUpdateButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Update" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                                 <Button mnemonicParsing="false" onAction="#appointmentDeleteButton" prefHeight="25.0" prefWidth="100.0" style="-fx-border-color: black;" text="Delete" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                               </children>
                            </GridPane>
                         </children>

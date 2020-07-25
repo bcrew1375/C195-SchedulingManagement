@@ -1,7 +1,8 @@
 package main_menu;
 
-import database.AppointmentRecord;
-import database.Customer;
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,56 +10,55 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 
+import database.AppointmentRecord;
+import database.Customer;
 import database.Database;
-import utility.Utility;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.Calendar;
+import utility.Utility;
 
 public class AddAppointmentController {
     @FXML
-    TextField meetingTypeTextField;
+    private TextField meetingTypeTextField;
     @FXML
-    TextField startHourTextField;
+    private TextField startHourTextField;
     @FXML
-    TextField startMinuteTextField;
+    private TextField startMinuteTextField;
     @FXML
-    ChoiceBox startAmPmChoiceBox;
+    private ChoiceBox startAmPmChoiceBox;
     @FXML
-    DatePicker startDatePicker;
+    private DatePicker startDatePicker;
     @FXML
-    TextField endHourTextField;
+    private TextField endHourTextField;
     @FXML
-    TextField endMinuteTextField;
+    private TextField endMinuteTextField;
     @FXML
-    ChoiceBox endAmPmChoiceBox;
+    private ChoiceBox endAmPmChoiceBox;
     @FXML
-    DatePicker endDatePicker;
+    private DatePicker endDatePicker;
 
-    Database database;
-    ObservableList<String> amPmChoices;
-    Utility utility;
+    private Database database;
 
-    Calendar startTime;
-    Calendar endTime;
+    private ObservableList<String> amPmChoices;
 
-    Integer startYear;
-    Integer startMonth;
-    Integer startDay;
-    Integer startHour;
-    Integer startMinute;
+    private Utility utility;
 
-    Integer endYear;
-    Integer endMonth;
-    Integer endDay;
-    Integer endHour;
-    Integer endMinute;
+    private Calendar startTime;
+    private Calendar endTime;
+
+    private Integer startYear;
+    private Integer startMonth;
+    private Integer startDay;
+    private Integer startHour;
+    private Integer startMinute;
+
+    private Integer endYear;
+    private Integer endMonth;
+    private Integer endDay;
+    private Integer endHour;
+    private Integer endMinute;
 
     @FXML
-    void initialize() {
+    private void initialize() {
         database = Database.getInstance();
         utility = new Utility();
 
@@ -78,7 +78,7 @@ public class AddAppointmentController {
     }
 
     @FXML
-    void AddButton() {
+    private void AddButton() {
         int scheduleConflict;
 
         try {
@@ -132,8 +132,7 @@ public class AddAppointmentController {
 
             if (startTime.after(endTime)) {
                 utility.displayError("The appointment end time can't be before the start.");
-            }
-            else {
+            } else {
 
                 scheduleConflict = checkAppointmentConflict();
 
@@ -147,24 +146,24 @@ public class AddAppointmentController {
                     utility.displayError("This appointment conflicts with an already scheduled appointment.");
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             utility.displayError("There was an error setting the appointment.");
         }
     }
 
     @FXML
-    void CancelButton() {
+    private void CancelButton() {
         meetingTypeTextField.getScene().getWindow().hide();
     }
 
-    int checkAppointmentConflict() {
+    private int checkAppointmentConflict() {
         ObservableList<Customer> customerList;
         ObservableList<AppointmentRecord> appointmentList;
+
         Timestamp addedAppointmentStart;
         Timestamp addedAppointmentEnd;
-        Timestamp currentAppointmentStart;
-        Timestamp currentAppointmentEnd;
+        Timestamp existingAppointmentStart;
+        Timestamp existingAppointmentEnd;
 
         customerList = database.getCombinedCustomerList();
         addedAppointmentStart = Timestamp.from(startTime.toInstant());
@@ -172,7 +171,10 @@ public class AddAppointmentController {
 
         // If there is a conflict with business hours.
         if ((startTime.get(Calendar.HOUR_OF_DAY) < 8) || (startTime.get(Calendar.HOUR_OF_DAY) > 16) ||
-                (endTime.get(Calendar.HOUR_OF_DAY) < 8) || (endTime.get(Calendar.HOUR_OF_DAY) > 16)) {
+                (endTime.get(Calendar.HOUR_OF_DAY) < 8) || (endTime.get(Calendar.HOUR_OF_DAY) > 16) ||
+                (startTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (startTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) ||
+                (endTime.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (endTime.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) ||
+                (startTime.get(Calendar.DATE) != endTime.get(Calendar.DATE))) {
             return 1;
         }
 
@@ -180,12 +182,12 @@ public class AddAppointmentController {
             appointmentList = customerList.get(i).getAppointmentList();
 
             for (int j = 0; j < appointmentList.size(); j++) {
-                currentAppointmentStart = customerList.get(i).getAppointmentList().get(j).getStart();
-                currentAppointmentEnd = customerList.get(i).getAppointmentList().get(j).getEnd();
+                existingAppointmentStart = customerList.get(i).getAppointmentList().get(j).getStart();
+                existingAppointmentEnd = customerList.get(i).getAppointmentList().get(j).getEnd();
 
                 // If there is a schedule conflict with other appointments.
-                if (((addedAppointmentStart.compareTo(currentAppointmentStart) >= 0) && (addedAppointmentStart.compareTo(currentAppointmentEnd) <= 0))
-                        || (addedAppointmentEnd.compareTo(currentAppointmentStart) >= 0) && (addedAppointmentEnd.compareTo(currentAppointmentEnd) <= 0)) {
+                if (((addedAppointmentStart.compareTo(existingAppointmentStart) >= 0) && (addedAppointmentStart.compareTo(existingAppointmentEnd) <= 0))
+                        || (addedAppointmentEnd.compareTo(existingAppointmentStart) >= 0) && (addedAppointmentEnd.compareTo(existingAppointmentEnd) <= 0)) {
                     return 2;
                 }
             }

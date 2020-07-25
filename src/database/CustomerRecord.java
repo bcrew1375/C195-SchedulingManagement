@@ -1,12 +1,10 @@
 package database;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
 public class CustomerRecord {
     private int customerId;
-    private String customerName;
     private int addressId;
+
+    private String customerName;
 
     public CustomerRecord(int customerId, String customerName, int addressId) {
         this.customerId = customerId;

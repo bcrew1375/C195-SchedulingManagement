@@ -10,32 +10,32 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import utility.Utility;
 import database.Database;
+import utility.Utility;
 
 public class LoginController {
     @FXML
-    Label titleLabel;
+    private Label titleLabel;
     @FXML
-    Label loginLabel;
+    private Label loginLabel;
     @FXML
-    Label passwordLabel;
+    private Label passwordLabel;
     @FXML
-    TextField loginTextbox;
+    private TextField loginTextbox;
     @FXML
-    TextField passwordTextbox;
+    private TextField passwordTextbox;
 
-    Stage mainMenuStage;
+    private Stage mainMenuStage;
 
-    Database database;
-    ResourceBundle language;
-    Utility utility;
+    private Database database;
+    private ResourceBundle language;
+    private Utility utility;
 
-    String queryError;
-    String noMatchError;
+    private String noMatchError;
+    private String queryError;
 
     @FXML
-    void initialize() {
+    private void initialize() {
 
         //Locale.setDefault(new Locale("es_es"));
 
@@ -61,13 +61,17 @@ public class LoginController {
     }
 
     @FXML
-    void loginButtonClicked() {
+    private void loginButtonClicked() {
 
         switch (database.checkLoginCredentials(loginTextbox.getText(), passwordTextbox.getText())) {
-            case 0:
-            { utility.displayError(noMatchError); break;}
-            case 1:
-            { utility.displayError(queryError); break;}
+            case 0: {
+                utility.displayError(noMatchError);
+                break;
+            }
+            case 1: {
+                utility.displayError(queryError);
+                break;
+            }
             case 2: {
                 recordLogin();
                 database.constructDatabaseRecords();
@@ -83,7 +87,7 @@ public class LoginController {
         }
     }
 
-    void recordLogin() {
+    private void recordLogin() {
         FileOutputStream logFileStream;
         String logString;
         Timestamp currentTimestamp;
@@ -98,13 +102,11 @@ public class LoginController {
                 // If the file already exists, append the new log to the end.
                 logFileStream = new FileOutputStream("log.txt", true);
                 logFileStream.write(logString.getBytes());
-            }
-            else {
+            } else {
                 logFileStream = new FileOutputStream("log.txt");
                 logFileStream.write(logString.getBytes());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }

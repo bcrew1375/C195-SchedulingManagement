@@ -3,18 +3,17 @@ package database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Timestamp;
-
 public class Customer {
     private int customerId;
-    private String customerName;
     private int addressId;
+
     private String address;
+    private String customerName;
     private String phoneNumber;
 
-    private ObservableList<AppointmentRecord> appointmentList;
+    private Database database;
 
-    Database database;
+    private ObservableList<AppointmentRecord> appointmentList;
 
     public Customer(CustomerRecord customerRecord) {
         this.customerId = customerRecord.getCustomerId();
