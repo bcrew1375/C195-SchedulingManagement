@@ -86,8 +86,8 @@
                            </TableView>
                            <TableView fx:id="appointmentsPerCustomerTableView" prefHeight="200.0" prefWidth="200.0" visible="false">
                              <columns>
-                               <TableColumn prefWidth="250.0" text="Customer Name" />
-                               <TableColumn prefWidth="250.0" text="Number of Appointments" />
+                               <TableColumn fx:id="appointmentsPerCustomerNameColumn" prefWidth="250.0" text="Customer Name" />
+                               <TableColumn fx:id="appointmentsPerCustomerAmountColumn" prefWidth="250.0" text="Number of Appointments" />
                              </columns>
                            </TableView>
                         </children>

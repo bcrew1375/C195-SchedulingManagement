@@ -1,12 +1,12 @@
-package main_menu;
+package database;
 
 public class TypeByMonth {
     private String type;
     private int amount;
 
-    public TypeByMonth(String type, int amount) {
+    public TypeByMonth(String type) {
         this.type = type;
-        this.amount = amount;
+        this.amount = 1;
     }
 
     public String getType() {

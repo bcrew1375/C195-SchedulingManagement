@@ -393,4 +393,12 @@ public class Database {
     public void setCurrentUserId(int currentUserId) {
         this.currentUserId = currentUserId;
     }
+
+    public ObservableList<UserRecord> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(ObservableList<UserRecord> userList) {
+        this.userList = userList;
+    }
 }

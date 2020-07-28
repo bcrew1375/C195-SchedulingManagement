@@ -2,6 +2,7 @@ package main_menu;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.InputMismatchException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -141,13 +142,13 @@ public class AddAppointmentController {
                             meetingTypeTextField.getText(), Timestamp.from(startTime.toInstant()), Timestamp.from(endTime.toInstant()));
                     meetingTypeTextField.getScene().getWindow().hide();
                 } else if (scheduleConflict == 1) {
-                    utility.displayError("This appointment falls outside business hours.");
+                    throw (new Exception("This appointment falls outside business hours."));
                 } else if (scheduleConflict == 2) {
-                    utility.displayError("This appointment conflicts with an already scheduled appointment.");
+                    throw (new Exception("This appointment conflicts with an already scheduled appointment."));
                 }
             }
         } catch (Exception e) {
-            utility.displayError("There was an error setting the appointment.");
+            utility.displayError(e.getMessage());
         }
     }
 

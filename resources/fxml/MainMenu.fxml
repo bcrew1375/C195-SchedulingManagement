@@ -40,7 +40,7 @@
                      </HBox>
                      <VBox spacing="10.0" style="-fx-border-color: black;">
                         <children>
-                           <Label id="MAIN_MENU_PARTS_LABEL" text="Customers">
+                           <Label text="Customers">
                               <font>
                                  <Font name="System Bold" size="20.0" />
                               </font>
@@ -78,7 +78,7 @@
                      </VBox>
                      <VBox spacing="10.0" style="-fx-border-color: black;">
                         <children>
-                           <Label id="MAIN_MENU_PRODUCTS_LABEL" text="Appointments">
+                           <Label fx:id="appointmentLabel" text="Appointments">
                               <font>
                                  <Font name="System Bold" size="20.0" />
                               </font>

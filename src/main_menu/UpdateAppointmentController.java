@@ -175,14 +175,14 @@ public class UpdateAppointmentController {
 
                     meetingTypeTextField.getScene().getWindow().hide();
                 } else if (scheduleConflict == 1) {
-                    utility.displayError("This appointment falls outside business hours.");
+                    throw (new Exception("This appointment falls outside business hours."));
                 } else if (scheduleConflict == 2) {
-                    utility.displayError("This appointment conflicts with an already scheduled appointment.");
+                    throw (new Exception("This appointment conflicts with an already scheduled appointment."));
                 }
             }
         }
         catch (Exception e) {
-            utility.displayError("There was an error setting the appointment.");
+            utility.displayError(e.getMessage());
         }
     }
 

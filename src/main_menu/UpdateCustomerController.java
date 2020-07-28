@@ -3,9 +3,11 @@ package main_menu;
 import database.Database;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import utility.Utility;
 
 public class UpdateCustomerController {
     Database database;
+    Utility utility;
 
     @FXML
     TextField customerNameTextField;
@@ -25,13 +27,33 @@ public class UpdateCustomerController {
 
     @FXML
     void UpdateButton() {
-        database.getSelectedCustomer().setCustomerName(customerNameTextField.getText());
-        database.getSelectedCustomer().setAddress(addressTextField.getText());
-        database.getSelectedCustomer().setPhoneNumber(phoneNumberTextField.getText());
+        String customerName = customerNameTextField.getText();
+        String address = addressTextField.getText();
+        String phoneNumber = phoneNumberTextField.getText();
 
-        database.updateCustomerRecord(database.getSelectedCustomer());
+        utility = new Utility();
 
-        customerNameTextField.getScene().getWindow().hide();
+        try {
+            if (customerName.isEmpty()) {
+                throw (new Exception("Customer name must not be blank"));
+            }
+            else if (address.isEmpty()) {
+                throw (new Exception("Address must not be blank"));
+            }
+            else if (phoneNumber.isEmpty()) {
+                throw (new Exception("Phone number must not be blank"));
+            }
+            database.getSelectedCustomer().setCustomerName(customerName);
+            database.getSelectedCustomer().setAddress(address);
+            database.getSelectedCustomer().setPhoneNumber(phoneNumber);
+
+            database.updateCustomerRecord(database.getSelectedCustomer());
+            customerNameTextField.getScene().getWindow().hide();
+        }
+        catch (Exception e) {
+            utility.displayError(e.getMessage());
+        }
+
     }
 
     @FXML

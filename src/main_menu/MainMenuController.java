@@ -1,7 +1,11 @@
 package main_menu;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,6 +31,8 @@ public class MainMenuController {
     private TableColumn<CustomerRecord, String> customerPhoneNumberColumn;
 
     @FXML
+    private Label appointmentLabel;
+    @FXML
     private TableColumn<AppointmentRecord, String> appointmentTypeColumn;
     @FXML
     private TableColumn<AppointmentRecord, String> appointmentStartColumn;
@@ -51,9 +57,6 @@ public class MainMenuController {
         database = Database.getInstance();
         utility = new Utility();
 
-//        addressList = database.getAddressList();
-//        appointmentList = database.getAppointmentList();
-//        customerList = database.getCustomerList();
         customerList = database.getCombinedCustomerList();
 
         customerTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -70,6 +73,14 @@ public class MainMenuController {
         customerTableView.setItems(customerList);
         customerTableView.getSelectionModel().select(0);
         refreshAppointmentList();
+
+        // This prevents having to set the selectedCustomer value in the Database class at the beginning of every method that uses it.
+        customerTableView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) ->
+                database.setSelectedCustomer((Customer) newValue)));
+
+        // This prevents having to set the selectedAppointment value in the Database class at the beginning of every method that uses it.
+        appointmentTableView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) ->
+                database.setSelectedAppointment((AppointmentRecord) newValue)));
     }
 
     @FXML
@@ -84,8 +95,6 @@ public class MainMenuController {
 
     @FXML
     private void customersUpdateButton() {
-        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
-
         if (database.getSelectedCustomer() != null) {
             updateCustomerStage = utility.LoadFXML("/fxml/UpdateCustomer.fxml");
 
@@ -98,7 +107,7 @@ public class MainMenuController {
 
     @FXML
     private void customersDeleteButton() {
-        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
             database.deleteCustomerRecord((Customer) customerTableView.getSelectionModel().getSelectedItem());
@@ -110,7 +119,7 @@ public class MainMenuController {
 
     @FXML
     private void appointmentAddButton() {
-        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedCustomer() != null) {
             addAppointmentStage = utility.LoadFXML("/fxml/AddAppointment.fxml");
@@ -125,8 +134,8 @@ public class MainMenuController {
 
     @FXML
     private void appointmentUpdateButton() {
-        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
-        database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedAppointment() != null) {
             updateAppointmentStage = utility.LoadFXML("/fxml/UpdateAppointment.fxml");
@@ -141,8 +150,8 @@ public class MainMenuController {
 
     @FXML
     private void appointmentDeleteButton() {
-        database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
-        database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
+        //database.setSelectedAppointment((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
 
         if (database.getSelectedAppointment() != null) {
             database.deleteAppointmentRecord((AppointmentRecord) appointmentTableView.getSelectionModel().getSelectedItem());
@@ -170,10 +179,25 @@ public class MainMenuController {
 
     @FXML
     private void refreshAppointmentList() {
+        ObservableList<AppointmentRecord> allAppointmentList;
+        ObservableList<AppointmentRecord> currentUserAppointmentList;
+
         database.setSelectedCustomer((Customer) customerTableView.getSelectionModel().getSelectedItem());
 
+        appointmentLabel.setText("Appointments for " + database.getSelectedCustomer().getCustomerName());
+
+        currentUserAppointmentList = FXCollections.observableArrayList();
+
         if (database.getSelectedCustomer() != null) {
-            appointmentTableView.setItems(database.getSelectedCustomer().getAppointmentList());
+            allAppointmentList = database.getSelectedCustomer().getAppointmentList();
+
+            for (int i = 0; i < allAppointmentList.size(); i++) {
+                if (allAppointmentList.get(i).getUserId() == database.getCurrentUserId()) {
+                    currentUserAppointmentList.add(allAppointmentList.get(i));
+                }
+            }
+
+            appointmentTableView.setItems(currentUserAppointmentList);
         } else {
             appointmentTableView.setItems(null);
         }
