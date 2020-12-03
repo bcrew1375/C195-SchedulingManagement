@@ -1,3 +1,1 @@
-Performance assessment project for WGU's C195 - Software II.
-
-Built in IntelliJ. An application for appointment management using SQL database manipulation.
+Performance assessment project for WGU's C195 - Software II. Built in IntelliJ. An application for appointment management. The application allows entry, updating, and deletion of appointment data. The data persists in a remotely-connected SQL database.
